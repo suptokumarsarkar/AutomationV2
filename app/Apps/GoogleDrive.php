@@ -48,7 +48,7 @@ class GoogleDrive
             ],
             [
                 'id' => 'new_file_in_folder',
-                'name' => Helpers::translate('new_file_in_folder'),
+                'name' => Helpers::translate('New File In Folder'),
                 'description' => Helpers::translate('Triggers when you create a new file inside a specific folder (not it\'s sub folders)')
             ],
             [

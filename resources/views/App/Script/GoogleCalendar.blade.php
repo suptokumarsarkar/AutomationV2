@@ -1,22 +1,22 @@
 <script>
-    function getPersonalStatementGoogleMeet(data) {
+    function getPersonalStatementGoogleCalendar(data) {
         return "<h6>" + data.name + "</h6><i style='font-size: 12px'>" + data.email + "</i>";
     }
 
-    let yxmeet = 0;
+    let yxGoogleCalendar = 0;
 
-    function connectAccountGoogleMeet() {
-        yxmeet = 0;
-        regGoogleMeet();
+    function connectAccountGoogleCalendar() {
+        yxGoogleCalendar = 0;
+        regGoogleCalendar();
 
     }
 
-    function connectAccountActionGoogleMeet() {
-        yxmeet = 1;
-        regGoogleMeet();
+    function connectAccountActionGoogleCalendar() {
+        yxGoogleCalendar = 1;
+        regGoogleCalendar();
     }
 
-    function checkTriggerGoogleMeet(trigger, accountId, AppId = "GoogleMeet") {
+    function checkTriggerGoogleCalendar(trigger, accountId, AppId = "GoogleCalendar") {
         $.ajax({
             url: '{{route('checkTrigger')}}',
             type: 'POST',
@@ -46,7 +46,7 @@
     }
 
 
-    function checkActionGoogleMeet(trigger, action) {
+    function checkActionGoogleCalendar(trigger, action) {
         let data = {
             trigger: trigger,
             action: action
@@ -87,15 +87,15 @@
 <script src="https://accounts.google.com/gsi/client">
 </script>
 <script>
-    function regGoogleMeet() {
-        const clientGoogleMeet = google.accounts.oauth2.initCodeClient({
+    function regGoogleCalendar() {
+        const clientGoogleCalendar = google.accounts.oauth2.initCodeClient({
             client_id: '{{$googleClientId}}',
             scope: 'https://www.googleapis.com/auth/userinfo.email \
           https://www.googleapis.com/auth/userinfo.profile\
           https://www.googleapis.com/auth/calendar',
             ux_mode: 'popup',
             callback: (response) => {
-                response.type = 'GoogleMeet';
+                response.type = 'GoogleCalendar';
                 $.ajax({
                     url: '{{route('googleToken')}}',
                     type: 'post',
@@ -104,10 +104,10 @@
                         data = JSON.parse(data);
                         if (data.status === 200) {
                             displaySuccessToaster(data.message);
-                            if (yxmeet) {
-                                getAccountsAction('GoogleMeet');
+                            if (yxGoogleCalendar) {
+                                getAccountsAction('GoogleCalendar');
                             } else {
-                                getAccounts('GoogleMeet');
+                                getAccounts('GoogleCalendar');
                             }
                         } else {
                             displayErrorToaster(data.message);
@@ -116,7 +116,7 @@
                 })
             },
         });
-        clientGoogleMeet.requestCode();
+        clientGoogleCalendar.requestCode();
 
     }
 

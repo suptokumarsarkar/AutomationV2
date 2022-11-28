@@ -288,16 +288,23 @@ class Manager extends Controller
         $array = [];
         if (is_array($funcData)) {
             foreach ($funcData as $keys => $value) {
-                if (is_array($value))
-                    foreach ($value as $key => $data) {
-                        $array[$key] = $data;
-                    } else {
+                if (is_array($value)) {
+                    if (!in_array($keys, $this->dataPureArraySetup())) {
+                        foreach ($value as $key => $data) {
+                            $array[$key] = $data;
+                        }
+                    }else{
+                        $array[$keys] = $value;
+                    }
+
+                } else {
                     $array[$keys] = $value;
                 }
             }
         }
         return $array;
     }
+
 
     public function runZap($mainData, $data, $userId)
     {
@@ -352,5 +359,40 @@ class Manager extends Controller
                 $array
             ];
         }
+    }
+
+    public function freshArrayParents($array = null, $parent = ""): array
+    {
+        if ($array === null) {
+            $array = $this->funcData;
+        }
+        if (is_array($array)) {
+            $mainData = [];
+            foreach ($array as $key => $item) {
+                if (is_array($item)) {
+                    if (is_numeric($key)) {
+                        $love = "";
+                    } else {
+                        $love = $key;
+                    }
+                    $data = $this->freshArrayParents($item, $love);
+                    foreach ($data as $key01 => $value) {
+                        $mainData[$parent . " " . $key01] = $value;
+                    }
+                } else {
+                    $mainData[$parent . " " . $key] = $item;
+                }
+            }
+            return $mainData;
+        } else {
+            return [
+                $array
+            ];
+        }
+    }
+
+    private function dataPureArraySetup(): array
+    {
+        return ['Attendees'];
     }
 }

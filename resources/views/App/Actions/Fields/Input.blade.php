@@ -36,7 +36,7 @@
         <div
             class="css-1faxqwt-PopularTemplatesSection__dropdown @if(isset($acceptDataLoad)) accpeter_dt_{{$acceptDataLoad}} @endif"
             style="width: 100%">
-            <div class="dropdown-msul-1{{$id}}" style="display: block;margin: 10px 10px 57px;">
+            <div class="dropdown-msul-1{{$id}}" style="display: block;margin-bottom: 61px;">
                 <input type="hidden" name="id[]" value="{{$id}}">
                 <label
                     for="ds2d1ds{{$id}}">{{$label}} {!! (isset($required) && $required == true) ? "<span class='required'>*</span>" : "" !!}</label>

@@ -27,8 +27,12 @@ class RunZap extends Controller
                 $trigger = new $triggerApp($triggerAccount);
                 $triggerActionFunc = $triggerAction . "_changes";
                 $funcDataV2 = $trigger->$triggerActionFunc($zap->database, $zap->zapData);
-
-                if ($funcDataV2) {
+                if (!empty($funcDataV2) && count($funcDataV2) != 0) {
+                    if (isset($funcDataV2['string']) && count($funcDataV2) == 1) {
+                        if (empty($funcDataV2['string'])) {
+                            break;
+                        }
+                    }
                     foreach ($funcDataV2 as $funcData) {
                         if (isset($value['api'])) {
 
@@ -59,10 +63,10 @@ class RunZap extends Controller
                         $zapRecord->save();
 
                         $triggerActionFunc = $triggerAction . "_update_database";
-                        $zapData = json_decode($zap->zapData,1);
-                        if(isset($zapData['trigger']['Data'])){
+                        $zapData = json_decode($zap->zapData, 1);
+                        if (isset($zapData['trigger']['Data'])) {
                             $updateDatabase = $trigger->$triggerActionFunc($zapData['trigger']['Data'], $zap->database);
-                        }else{
+                        } else {
                             $updateDatabase = $trigger->$triggerActionFunc($zap->zapData, $zap->database);
                         }
                         $zap->database = json_encode($updateDatabase, true);

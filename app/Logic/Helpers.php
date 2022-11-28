@@ -531,6 +531,9 @@ class Helpers
 
     public static function stringorsingle($data)
     {
+        if ($data == null) {
+            return "";
+        }
         if (!is_array($data)) {
             return $data;
         } else {
@@ -545,8 +548,19 @@ class Helpers
         if (!is_array($data)) {
             return $data;
         } else {
-            return implode($data, ".");
+            return implode(".", $data);
         }
+    }
+
+    public static function maxNote($translate)
+    {
+        return "<div class='max-note text-center'>$translate</div>";
+    }
+
+    public static function dump($value)
+    {
+        echo json_encode($value);
+        exit(1);
     }
 
 
