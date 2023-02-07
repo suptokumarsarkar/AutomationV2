@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\Auth\GoogleAuth;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\Soft\PlanController;
@@ -25,6 +26,10 @@ Route::get('/logout', [PageController::class, 'logout'])->name('logout');
 Route::get('/signup', [AuthController::class, 'signup'])->name('register');
 Route::post('/signup', [AuthController::class, 'signupAction'])->name('signupAction');
 Route::post('/fastLogin', [AuthController::class, 'fastLogin'])->name('fastLogin');
+
+Route::post('oauth/{appid}',[GoogleAuth::class, 'oauthApp'])->name('oauthApp');
+Route::get('oauth/{appid}',[GoogleAuth::class, 'oauthApp'])->name('oauthApp');
+
 
 Route::group(['middleware' => 'websiteAccess'], function () {
 

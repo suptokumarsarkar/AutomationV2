@@ -13,7 +13,7 @@
                                                                                                        fill="white"></rect></clipPath></defs></svg>
                 </span>
                     <div class="moni_248_model_header_left_col_icon_tag_content">
-                        <h2 class="moni_248_model_header_left_col_icon_tag_content_title">{{\App\Logic\translate('Change trigger')}}</h2>
+                        <h2 class="moni_248_model_header_left_col_icon_tag_content_title">{{\App\Logic\translate('Change app')}}</h2>
                         <p class="moni_248_model_header_left_col_icon_tag_content_about">{{\App\Logic\translate('A trigger is an event that
                             starts your Nit')}}</p>
                     </div>
@@ -85,8 +85,9 @@
                 return false;
             }
             let html = '';
+            let is = 0;
             for (let sd = 0; sd < apps.length; sd++) {
-                if (sd >= 10) {
+                if (is >= 10) {
                     break;
                 }
 
@@ -111,6 +112,7 @@
                         </span>
                         <p class="moni_248_model_main_apps_apps_icon_tag">` + apps[sd].AppName + `</p>
                     </div></div>`;
+                    is++;
                 }
             }
             $(".sdf154sdf1ed10d1e4d").html(html);

@@ -28,7 +28,7 @@ class Manager extends Controller
     {
         $data = $request->get("vk");
         $value = Helpers::evaluteData($request->all());
-        $appData = json_decode($app, true);
+        $appData = json_decode($request->get("dataAction"), true);
         if ($appData['Mode'] == 'Triggers') {
             $appClassHere = "App\\Apps\\Triggers\\" . $appData['AppId'] . 'Trigger';
             $this->appClass = new $appClassHere($appData['AccountId']);
@@ -40,6 +40,31 @@ class Manager extends Controller
         return $this->appClass->$fnc($id, $value, $data);
 
 
+    }
+
+    public function addApp(Request $request)
+    {
+        $account = new Account;
+        $appId = $request['AppId'];
+        $cls = "App\\Apps\\" . $appId;
+        $this->appClass = new $cls();
+        $account->accountId = Auth::id();
+        $tokenGroup = $this->appClass->addAccount($request->all());
+        $profile = $this->appClass->getProfile($request->all(), json_decode($tokenGroup, true));
+        $account->token = $tokenGroup;
+        $account->data = $profile;
+        $account->type = $request->AppId;
+        if ($account->save()) {
+            return json_encode([
+                'status' => 200,
+                'message' => Helpers::translate('Account Added Successfully.'),
+            ]);
+        } else {
+            return json_encode([
+                'status' => 400,
+                'message' => Helpers::translate("Something went wrong. Please try again.")
+            ]);
+        }
     }
 
     public function getApps(Request $request)
@@ -293,7 +318,7 @@ class Manager extends Controller
                         foreach ($value as $key => $data) {
                             $array[$key] = $data;
                         }
-                    }else{
+                    } else {
                         $array[$keys] = $value;
                     }
 

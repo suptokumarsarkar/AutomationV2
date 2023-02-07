@@ -7,7 +7,7 @@ use App\Http\Controllers\Api\Apps\Manager;
 use App\Logic\Helpers;
 use App\Models\Account;
 
-class TrelloTrigger
+class LinkedInTrigger
 {
     private $account;
     /**

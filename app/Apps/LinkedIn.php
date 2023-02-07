@@ -7,7 +7,7 @@ use App\Logic\Helpers;
 use App\Models\Account;
 use App\Models\AppsData;
 
-class Trello
+class LinkedIn
 {
 
 //    private $client_id = '68667692288-4bkagbc71fb2k0c9dr481ip9ib22iffv.apps.googleusercontent.com';
@@ -21,197 +21,50 @@ class Trello
      * @var mixed
      */
     public $client_secret;
+    public $dataOptionTrigger = false;
 
     public function __construct()
     {
-        $gmail = AppsData::where("AppId", "Trello")->first();
+        $gmail = AppsData::where("AppId", "LinkedIn")->first();
         if ($gmail) {
             $appInfo = json_decode($gmail->AppInfo, true);
             $this->client_id = $appInfo['api_key'];
-            $this->client_secret = $appInfo['secret'];
+            $this->client_secret = $appInfo['client_secret'];
         }
     }
 
     public function addAccount($data = [])
     {
-        return json_encode($data);
+        return json_encode($this->getAccessToken($data['token']['code']), true);
     }
 
     public function getProfile($data = [], $tokenGroup = [])
     {
-        return json_encode($this->getMember($data['token'], ['memberId' => $this->getUserId()]));
+        $access_token = $tokenGroup['access_token'];
+
+        return json_encode($this->getMember($access_token), true);
+
     }
 
 
     public function getTrigger(): array
     {
-        return array(
-            [
-                'id' => 'new_board',
-                'name' => Helpers::translate('New Board'),
-                'description' => Helpers::translate('Triggers when a new board is added')
-            ],
-            [
-                'id' => 'new_card',
-                'name' => Helpers::translate('New Card'),
-                'description' => Helpers::translate('Triggers when a new card is added')
-            ],
-            [
-                'id' => 'card_archived',
-                'name' => Helpers::translate('Card Archived'),
-                'description' => Helpers::translate('Triggers when a card is archived in trello')
-            ],
-//            [
-//                'id' => 'new_comment_in_card',
-//                'name' => Helpers::translate('New Comment in Card'),
-//                'description' => Helpers::translate('Triggers when a new comment comes into a card')
-//            ],
-//            [
-//                'id' => 'new_activity',
-//                'name' => Helpers::translate('New Activity'),
-//                'description' => Helpers::translate('Triggers when there is an activity in trello')
-//            ],
-//            [
-//                'id' => 'card_moved_to_list',
-//                'name' => Helpers::translate('Card Moved To List'),
-//                'description' => Helpers::translate('Triggers when a card is moved to list in trello, inside the same board')
-//            ],
-//            [
-//                'id' => 'card_due',
-//                'name' => Helpers::translate('Card Due'),
-//                'description' => Helpers::translate('Triggers at a specific time before a card is due')
-//            ],
-//            [
-//                'id' => 'card_updated',
-//                'name' => Helpers::translate('Card Updated'),
-//                'description' => Helpers::translate('Triggers when a card is updated in trello')
-//            ],
-            [
-                'id' => 'new_checklist',
-                'name' => Helpers::translate('New Checklist'),
-                'description' => Helpers::translate('Triggers when a new checklist is created in trello')
-            ],
-            [
-                'id' => 'new_label',
-                'name' => Helpers::translate('New Label'),
-                'description' => Helpers::translate('Triggers when a new label is created')
-            ],
-//            [
-//                'id' => 'new_label_added_to_card',
-//                'name' => Helpers::translate('New Label Added To Card'),
-//                'description' => Helpers::translate('Triggers when a new label is added to card')
-//            ],
-            [
-                'id' => 'new_list',
-                'name' => Helpers::translate('New List'),
-                'description' => Helpers::translate('Triggers when a new list is created in a board')
-            ],
-            [
-                'id' => 'new_member',
-                'name' => Helpers::translate('New Member In Board'),
-                'description' => Helpers::translate('Triggers when a new member is added to a board')
-            ],
-//            [
-//                'id' => 'new_notification',
-//                'name' => Helpers::translate('New Notification'),
-//                'description' => Helpers::translate('Triggers when a new notification comes in trello')
-//            ]
-        );
+        return array();
     }
 
     public function getActions(): array
     {
         return array(
             [
-                'id' => 'create_checklist_item_in_card',
-                'name' => Helpers::translate('Create Checklist Item In Card'),
-                'description' => Helpers::translate('Creates a new checklist item in card')
+                'id' => 'create_share_update',
+                'name' => Helpers::translate('Create Share Update'),
+                'description' => Helpers::translate('Post a Content in your linkedIn Profile')
             ],
             [
-                'id' => 'create_board',
-                'name' => Helpers::translate('Create Board'),
-                'description' => Helpers::translate('Creates a new board')
+                'id' => 'create_company_update',
+                'name' => Helpers::translate('Create Company Update'),
+                'description' => Helpers::translate('Update your page with new data')
             ],
-            [
-                'id' => 'create_card',
-                'name' => Helpers::translate('Create Card'),
-                'description' => Helpers::translate('Creates a new card')
-            ],
-            [
-                'id' => 'archive_card',
-                'name' => Helpers::translate('Archive Card'),
-                'description' => Helpers::translate('Archives a card')
-            ],
-            [
-                'id' => 'add_attachment_to_card',
-                'name' => Helpers::translate('Add Attachments To Card'),
-                'description' => Helpers::translate('Adds one or more attachments to card')
-            ],
-            [
-                'id' => 'add_label_to_card',
-                'name' => Helpers::translate('Add Label To Card'),
-                'description' => Helpers::translate('Adds Label to a specific card')
-            ],
-/*            [
-                'id' => 'move_card',
-                'name' => Helpers::translate('Move Card'),
-                'description' => Helpers::translate('Moves a specific card to a board')
-            ],*/
-/*            [
-                'id' => 'add_members_to_card',
-                'name' => Helpers::translate('Add Members To Card'),
-                'description' => Helpers::translate('Adds member(s) to a specific card')
-            ],
-            [
-                'id' => 'update_card',
-                'name' => Helpers::translate('Update Card'),
-                'description' => Helpers::translate('Updates a specific card')
-            ],
-            [
-                'id' => 'add_checklist_to_card',
-                'name' => Helpers::translate('Add Checklist To Card'),
-                'description' => Helpers::translate('Adds checklist to card')
-            ],*/
-            [
-                'id' => 'close_board',
-                'name' => Helpers::translate('Close Board'),
-                'description' => Helpers::translate('Closes a board without permanently deleting')
-            ],
-            [
-                'id' => 'delete_board',
-                'name' => Helpers::translate('Delete Board'),
-                'description' => Helpers::translate('Delete a board - permanently deleting')
-            ],
-            /*[
-                'id' => 'write_comment',
-                'name' => Helpers::translate('Write Comment'),
-                'description' => Helpers::translate('Writes a comment into a specific card')
-            ],
-            [
-                'id' => 'complete_checklist_item_in_card',
-                'name' => Helpers::translate('Complete Checklist Item In Card'),
-                'description' => Helpers::translate('Completes a checklist item in a specific card')
-            ],
-            [
-                'id' => 'delete_checklist_in_card',
-                'name' => Helpers::translate('Delete Checklist In Card'),
-                'description' => Helpers::translate('Deletes a checklist in card')
-            ],*/
-            [
-                'id' => 'create_label',
-                'name' => Helpers::translate('Create Label'),
-                'description' => Helpers::translate('Creates a new label')
-            ],
-            [
-                'id' => 'create_list',
-                'name' => Helpers::translate('Create List'),
-                'description' => Helpers::translate('Creates a new list')
-            ],
-/*            [
-                'id' => 'remove_label_from_card',
-                'name' => Helpers::translate('Remove Label From Card'),
-                'description' => Helpers::translate('Removes an exising label from card')
-            ]*/
         );
     }
 
@@ -220,12 +73,15 @@ class Trello
     {
         $getProfile = Account::find($id);
         $token = json_decode($getProfile->token, true);
-        return $token['token'];
+        return $token['access_token'];
     }
 
-    public function getUserId($actionAccount = null)
+    public function getUserId($id = null)
     {
-        return 'me';
+        if ($id == null) return 'me';
+        $getProfile = Account::find($id);
+        $token = json_decode($getProfile->data, true);
+        return $token['id'];
     }
 
     public function getCheckupData($accountId, $labelId)
@@ -265,12 +121,103 @@ class Trello
 
 
     // Default API
-    public function getMember($access_token, $param)
+    public function getMember($access_token)
     {
-        $url = "https://api.trello.com/1/members/{$param['memberId']}/?key={$this->client_id}&token=" . $access_token;
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, 'https://api.linkedin.com/v2/me');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+
+
+        $headers = array();
+        $headers[] = "Authorization: Bearer $access_token";
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
         $response = curl_exec($ch);
+        return json_decode($response, true);
+
+    }
+
+    public function getAccessToken($code)
+    {
+        $params = [
+            'grant_type' => 'authorization_code',
+            'code' => $code,
+            'client_id' => $this->client_id,
+            'client_secret' => $this->client_secret,
+            'redirect_uri' => 'http://localhost/saas/oauth/linkedin',
+        ];
+
+        $ch = curl_init();
+        $url = 'https://www.linkedin.com/oauth/v2/accessToken?' . http_build_query($params);
+        curl_setopt($ch, CURLOPT_URL, $url);
+//        dd($params, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_POST, 1);
+
+        $headers = array();
+        $headers[] = 'Content-Type: application/x-www-form-urlencoded';
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+        $response = curl_exec($ch);
+        if (curl_errno($ch)) {
+            echo 'Error:' . curl_error($ch);
+        }
+        return json_decode($response, true);
+    }
+
+    public function shareContent($access_token, $param)
+    {
+
+
+        $ch = curl_init();
+        $url = "https://api.linkedin.com/v2/ugcPosts";
+
+        $headers = array('Content-Type: application/json', 'X-Restli-Protocol-Version: 2.0.0', 'x-li-format: json', 'Authorization: Bearer ' . $access_token);
+        $fields = [
+            "author" => "urn:li:person:{$param['user_id']}",
+            "lifecycleState" => "PUBLISHED",
+            "specificContent" => [
+                "com.linkedin.ugc.ShareContent" => [
+                    "shareCommentary" => [
+                        "text" => $param['desc']
+                    ],
+                    "shareMediaCategory" => "ARTICLE",
+                    "media" => [
+                        "status" => "READY",
+                        "description" => [
+                            "text" => $param['desc']
+                        ],
+                        "title" => [
+                            "text" => $param['comment']
+                        ],
+                        "originalUrl" => $param['content_url']
+                    ]
+                ]
+            ],
+            "visibility" => [
+                "com.linkedin.ugc.MemberNetworkVisibility" => "PUBLIC"
+            ]
+
+        ];
+        $fields = json_encode($fields, true);
+
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'POST');
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $fields);
+        $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE); // this results 0 every time
+        $response = curl_exec($curl);
+
+        if ($response === false)
+            $response = curl_error($curl);
+
+//        echo stripslashes($response);
+
+        curl_close($curl);
         return json_decode($response, true);
     }
 
@@ -373,6 +320,7 @@ class Trello
         $response = curl_exec($ch);
         return json_decode($response, true);
     }
+
     public function listMembers($access_token, $param)
     {
         $url = "https://api.trello.com/1/boards/{$param['boardId']}/members?key={$this->client_id}&token=" . $access_token;
@@ -562,6 +510,7 @@ class Trello
         $response = curl_exec($ch);
         return json_decode($response, true);
     }
+
     public function createLabel($access_token, $param)
     {
         $params = [

@@ -22,9 +22,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('google-login',[GoogleAuth::class, 'login'])->name('GoogleLogin');
+
+
 Route::post('session/sideBar',[\App\Http\Controllers\Api\Session\SessionController::class, 'sideBar'])->name('session.sideBar');
 
 Route::post('google-token',[GoogleAuth::class, 'createProfile'])->name('googleToken');
+Route::post('add-app',[\App\Http\Controllers\Api\Apps\Manager::class, 'AddApp'])->name('AddApp');
 
 
 Route::post('facebook-login',[FacebookAuth::class, 'login'])->name('FacebookLogin');

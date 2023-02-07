@@ -529,9 +529,12 @@ class Helpers
         return $hs;
     }
 
-    public static function stringorsingle($data)
+    public static function stringorsingle($data, $nullable = false)
     {
         if ($data == null) {
+            if ($nullable) {
+                return null;
+            }
             return "";
         }
         if (!is_array($data)) {
@@ -543,8 +546,14 @@ class Helpers
         }
     }
 
-    public static function stringorexplode($data)
+    public static function stringorexplode($data, $nullable = false)
     {
+        if ($data == null) {
+            if ($nullable) {
+                return null;
+            }
+            return "";
+        }
         if (!is_array($data)) {
             return $data;
         } else {
@@ -562,6 +571,8 @@ class Helpers
         echo json_encode($value);
         exit(1);
     }
+
+
 
 
 }

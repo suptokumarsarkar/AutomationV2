@@ -57,6 +57,15 @@ class GoogleAuth extends Controller
         }
     }
 
+    function oauthApp($appId, Request $request)
+    {
+        $data = json_encode([
+            'app_id' => $appId,
+            'data' => $request->all()
+        ]);
+        return '<textarea id="token" style="display:none">'.$data .'</textarea> Redirecting..';
+    }
+
 
     public function googleToken(Request $request)
     {

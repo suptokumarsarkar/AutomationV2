@@ -65,16 +65,15 @@
             $("#ds2d1ds{{$id}}").niceSelect();
             @if(isset($dataLoad))
             $(".adf15dss{{$id}}").load(function () {
-                alert("loaded");
             });
             $(".adf15dss{{$id}}").change(function () {
                 let attr = $(this).find('option:selected').attr('data-load');
                 let dataAction = $(this).find('option:selected').attr('data-action');
                 if (typeof attr !== 'undefined' && attr !== false) {
                     $.ajax({
-                        url: '{{route("getExtraDataField")}}/' + attr + "/" + dataAction,
+                        url: '{{route("getExtraDataField")}}/' + attr + "/okay",
                         method: 'POST',
-                        data: $("#{{isset($formName) ? $formName : 'TriggerForm'}}").serialize(),
+                        data: "dataAction="+dataAction+"&"+$("#{{isset($formName) ? $formName : 'triggerForm'}}").serialize(),
                         beforeSend: function () {
                             showLoader();
                         },
